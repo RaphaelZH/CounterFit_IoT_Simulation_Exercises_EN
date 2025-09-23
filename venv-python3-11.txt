@@ -3,6 +3,8 @@ beautifultable
 black
 bokeh
 CounterFit
+counterfit-connection
+counterfit-shims-grove
 gitpython
 ipykernel
 ipynbcompress

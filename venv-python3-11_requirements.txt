@@ -31,6 +31,8 @@ comm==0.2.3
 confection==0.1.5
 contourpy==1.3.3
 CounterFit==0.1.4.dev9
+counterfit-connection==0.1.0.dev5
+counterfit-shims-grove==0.1.4.dev5
 cycler==0.12.1
 cymem==2.0.11
 debugpy==1.8.17
