@@ -8,7 +8,7 @@ import paho.mqtt.client as mqtt
 
 import json
 
-CounterFitConnection.init("127.0.0.1",5000)
+CounterFitConnection.init("127.0.0.1", 5000)
 
 light_sensor = GroveLightSensor(0)
 led = GroveLed(5)
@@ -24,10 +24,14 @@ mqtt_client.loop_start()
 print("MQTT connected!")
 
 while True:
-    light = light_sensor.light
-    telemetry = json.dumps({"light": light})
+    light_level = light_sensor.light
+    if light_level < 300:
+        led.on()
+    else:
+        led.off()
+    telemetry = json.dumps({"light_level" : light_level})
 
-    print("Sending telemetry ", telemetry)
+    print("Sending telemetry: ", telemetry)
     
     mqtt_client.publish(client_telemetry_topic, telemetry)
     
