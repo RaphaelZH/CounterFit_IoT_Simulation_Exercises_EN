@@ -6,13 +6,16 @@ from counterfit_shims_grove.grove_led import GroveLed
 
 import paho.mqtt.client as mqtt
 
+import json
+
 CounterFitConnection.init("127.0.0.1",5000)
 
 light_sensor = GroveLightSensor(0)
 led = GroveLed(5)
 
-id = "iot_"
+id = "iot_001_"
 client_name = f"{id}nightlight_client"
+client_telemetry_topic = f"{id}nightlight/telemetry"
 
 mqtt_client = mqtt.Client(mqtt.CallbackAPIVersion.VERSION2, client_name)
 mqtt_client.connect("test.mosquitto.org", 1883, 60)
@@ -21,11 +24,11 @@ mqtt_client.loop_start()
 print("MQTT connected!")
 
 while True:
-    light_level = light_sensor.light
-    if light_level < 300:
-        led.on()
-    else:
-        led.off()
-    print("Light Level: ", light_level)
-    #CounterFitConnection.send_data("light_level", light_level)
-    time.sleep(1)
+    light = light_sensor.light
+    telemetry = json.dumps({"light": light})
+
+    print("Sending telemetry ", telemetry)
+    
+    mqtt_client.publish(client_telemetry_topic, telemetry)
+    
+    time.sleep(5)
