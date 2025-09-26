@@ -29,10 +29,10 @@ while True:
         led.on()
     else:
         led.off()
-    telemetry = json.dumps({"light_level" : light_level})
+    telemetry = json.dumps({"light_level": light_level})
 
     print("Sending telemetry: ", telemetry)
-    
+
     mqtt_client.publish(client_telemetry_topic, telemetry)
-    
+
     time.sleep(5)
