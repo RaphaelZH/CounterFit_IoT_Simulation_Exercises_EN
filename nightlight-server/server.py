@@ -4,6 +4,8 @@ import paho.mqtt.client as mqtt
 
 import json
 
+import mysql.connector
+
 id = "iot_001"
 client_name = f"{id}/nightlight_server"
 client_telemetry_topic = f"{id}/nightlight/telemetry"
@@ -16,6 +18,19 @@ mqtt_client.connect("test.mosquitto.org", 1883, 60)
 mqtt_client.loop_start()
 print("MQTT connected!")
 
+mydb = mysql.connector.connect(
+    host="localhost", user="root", password="Métronome", database="nightlight_db"
+)
+
+mycursor = mydb.cursor()
+mycursor.execute(
+    "CREATE TABLE IF NOT EXISTS light_records (datetime VARCHAR(255), light_level INT)"
+)
+# mycursor.execute("DROP TABLE IF EXISTS iot_devices")
+mycursor.execute("SHOW TABLES")
+for x in mycursor:
+    print(x)
+
 
 def handle_telemetry(client, userdata, message):
     payload = json.loads(message.payload.decode())
@@ -26,6 +41,12 @@ def handle_telemetry(client, userdata, message):
 
     mqtt_client.publish(server_command_topic_1, json.dumps(command))
     mqtt_client.publish(server_command_topic_2, json.dumps(command))
+
+    sql = "INSERT INTO light_records (datetime, light_level) VALUES (%s, %s)"
+    val = (time.strftime("%Y-%m-%d %H:%M:%S"), payload["light_level"])
+    mycursor.execute(sql, val)
+    mydb.commit()
+    print(mycursor.rowcount, "record inserted.")
 
 
 mqtt_client.subscribe(client_telemetry_topic)

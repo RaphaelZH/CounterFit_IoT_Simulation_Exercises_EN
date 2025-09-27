@@ -11,6 +11,7 @@ ipykernel
 ipython
 markupsafe==2.0.1
 matplotlib
+mysql-connector-python
 numpy<2.0.0,>=1.23.5
 paho-mqtt
 pandas
